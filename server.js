@@ -24,6 +24,10 @@ const types = {
 
 http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
+  if (urlPath === '/health') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    return res.end('ok');
+  }
   if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
   const filePath = path.join(root, urlPath);
   if (!filePath.startsWith(root)) {
@@ -40,5 +44,8 @@ http.createServer((req, res) => {
     res.end(data);
   });
 }).listen(PORT, '0.0.0.0', () => {
-  console.log(`thirdspace listening on ${PORT}`);
+  console.log(`thirdspace listening on 0.0.0.0:${PORT}`);
 });
+
+process.on('uncaughtException', (err) => console.error('uncaughtException', err));
+process.on('unhandledRejection', (err) => console.error('unhandledRejection', err));
